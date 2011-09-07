@@ -18,7 +18,7 @@ require 'rails'
 # require 'active_support/json'
 
 module StuffArc
-  VERSION = "0.0.2"
+  VERSION = "0.0.3"
 
   def self.included(mod)
     mod_lowercase = mod.to_s.underscore.pluralize
