@@ -37,12 +37,12 @@ class StuffArcHelper
 end
 
 class StuffArcTest < Test::Unit::TestCase
-  def setup
-    puts "StuffArcHelper.public_methods: #{StuffArcHelper.public_methods.grep /arc/}"
-  end
+  # def setup
+  #   puts "StuffArcHelper.public_methods: #{StuffArcHelper.public_methods.grep /arc/}"
+  # end
   
   def teardown
-    fname = StuffArcHelper.to_s.underscore + '.json'
+    fname = StuffArcHelper.to_s.underscore.pluralize + '.json'
     [fname, fname + '~'].each do |fn|
       File.unlink(fn) if File.exists? fn
     end
@@ -57,7 +57,7 @@ class StuffArcTest < Test::Unit::TestCase
     StuffArcHelper.archive
     fname = StuffArcHelper.to_s.underscore
     assert_equal 'stuff_arc_helper', fname, "underscore should transform class name correctly"
-    assert File.exists?('stuff_arc_helper.json'), "archive creates a file"
+    assert File.exists?('stuff_arc_helpers.json'), "archive creates a file"
   end
   
   def test_reads_archive
@@ -66,5 +66,21 @@ class StuffArcTest < Test::Unit::TestCase
     assert_equal [], StuffArcHelper.db, "StuffArcHelper.init_db should empty db"
     StuffArcHelper.unarchive
     assert_equal StuffArcHelper.all, StuffArcHelper.db, "Unarchiving should fill db"
+  end
+  
+  def test_full_path_to_archive
+    path = File.join(Dir.pwd, 'path-to-archive')
+    Dir.mkdir(path) unless File.exists? path
+    StuffArcHelper.archive :lib_dir => path
+    assert File.exists?(File.join(path, 'stuff_arc_helpers.json')), "archive should be in #{path}"
+    File.unlink File.join(path, 'stuff_arc_helpers.json') if File.exists? File.join(path, 'stuff_arc_helpers.json')
+    Dir.rmdir path if File.exists? path
+  end
+  
+  def test_fname_override
+    fname = 'foo-stuff'
+    StuffArcHelper.archive :fname => fname
+    assert File.exists?(fname), "file #{fname} should exist"
+    File.unlink(fname) if File.exists? fname
   end
 end

@@ -11,17 +11,30 @@
 #
 # Both methods are designed to be run from a Rails Console - not programatically.
 
+require 'rails'
+# require 'pry'
+# require 'active_support'
+# require 'active_support/inflector'
+# require 'active_support/json'
+
 module StuffArc
-  VERSION = "0.0.1"
-  
-  require 'active_support'
-  require 'active_support/inflector'
-  require 'active_support/json'
+  VERSION = "0.0.2"
 
   def self.included(mod)
-    mod_lowercase = mod.to_s.underscore
+    mod_lowercase = mod.to_s.underscore.pluralize
     tmp =<<-EOF
-    def self.archive fname = '#{mod_lowercase}.json'
+    def self.archive options = {}
+      unless (lib_dir = options.delete(:lib_dir))
+        if Rails.public_path
+          lib_dir =  File.join( File.dirname(::Rails.public_path), 'lib', 'stuff_arc' )
+          Dir.mkdir(lib_dir) unless File.exists? lib_dir
+        else
+          lib_dir = '.'
+        end
+      end
+      fname = options.delete(:fname) || '#{mod_lowercase}.json'
+      fname = File.join(lib_dir, fname) unless fname[0] == File::SEPARATOR
+      
       if File.exists? fname
         back_name = fname + '~'
         File.unlink back_name if File.exists? back_name
@@ -41,7 +54,18 @@ module StuffArc
     mod.instance_eval tmp, __FILE__, __LINE__
 
     tmp =<<-EOF
-    def self.unarchive fname = '#{mod_lowercase}.json'
+    def self.unarchive options = {}
+      unless (lib_dir = options.delete(:lib_dir))
+        if Rails.public_path
+          lib_dir =  File.join( File.dirname(::Rails.public_path), 'lib', 'stuff_arc' )
+          Dir.mkdir(lib_dir) unless File.exists? lib_dir
+        else
+          lib_dir = '.'
+        end
+      end
+      fname = options.delete(:fname) || '#{mod_lowercase}.json'
+      fname = File.join(lib_dir, fname) unless fname[0] == File::SEPARATOR
+
       return nil unless File.exists? fname
 
       f = File.new fname

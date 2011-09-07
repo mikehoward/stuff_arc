@@ -25,17 +25,10 @@ end
 desc "build gem"
 task :gem do
   system "gem build #{gem_name}.gemspec"
-end
-
-desc "commit changes"
-task :commit do
-  system 'git add .'
-  system "git commit -m \"checkin version #{gem_version}\""
-end
-
-desc "commit changes and tag as #{gem_version}"
-task :tag => :commit do
-  system "git tag #{gem_version}"
+  if 'mike.local' == IO.popen('hostname').read.chomp
+    system "cp #{gem_name}-#{gem_version}.gem ~/Rails/GemCache/gems/"
+    system "(cd ~/Rails/GemCache ; gem generate_index -d . )"
+  end
 end
 
 desc "push to github"
