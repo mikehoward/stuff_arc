@@ -1,10 +1,12 @@
 $LOAD_PATH << File.expand_path("../../lib",  __FILE__)
 require 'test/unit'
+require 'active_model'
 require 'stuff_arc'
 # require 'active_model'
 
 class StuffArcHelper
   include StuffArc
+  include ActiveModel::Serializers::JSON
 
   class <<self
     attr_accessor :db
@@ -26,6 +28,16 @@ class StuffArcHelper
   def ==(other)
     self.foo == other.foo && self.bar == other.bar
   end
+  
+  def attributes
+    {'foo' => @foo, 'bar' => @bar}
+  end
+  
+  def attributes=(hash)
+    hash.each do |k,v|
+      self.instance_variable_set "@#{k}", v
+    end
+  end
 
   def self.all
     [self.new({foo: 'foo', bar: 'bar'}), self.new({foo: 'foo2', bar: 'bar2'})]
@@ -41,12 +53,12 @@ class StuffArcTest < Test::Unit::TestCase
   #   puts "StuffArcHelper.public_methods: #{StuffArcHelper.public_methods.grep /arc/}"
   # end
   
-  def teardown
-    fname = StuffArcHelper.to_s.underscore.pluralize + '.json'
-    [fname, fname + '~'].each do |fn|
-      File.unlink(fn) if File.exists? fn
-    end
-  end
+  # def teardown
+  #   fname = StuffArcHelper.to_s.underscore.pluralize + '.json'
+  #   [fname, fname + '~'].each do |fn|
+  #     File.unlink(fn) if File.exists? fn
+  #   end
+  # end
   
   def test_methods_exist
     assert StuffArcHelper.respond_to?(:archive), "StuffArcHelper has class method :archive"
@@ -74,6 +86,7 @@ class StuffArcTest < Test::Unit::TestCase
     StuffArcHelper.archive :lib_dir => path
     assert File.exists?(File.join(path, 'stuff_arc_helpers.json')), "archive should be in #{path}"
     File.unlink File.join(path, 'stuff_arc_helpers.json') if File.exists? File.join(path, 'stuff_arc_helpers.json')
+    File.unlink File.join(path, 'stuff_arc_helpers.json~') if File.exists? File.join(path, 'stuff_arc_helpers.json~')
     Dir.rmdir path if File.exists? path
   end
   

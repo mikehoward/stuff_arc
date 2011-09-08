@@ -12,13 +12,11 @@
 # Both methods are designed to be run from a Rails Console - not programatically.
 
 require 'rails'
+require 'active_model'
 # require 'pry'
-# require 'active_support'
-# require 'active_support/inflector'
-# require 'active_support/json'
 
 module StuffArc
-  VERSION = "0.0.3"
+  VERSION = "0.0.4"
 
   def self.included(mod)
     mod_lowercase = mod.to_s.underscore.pluralize
@@ -43,8 +41,8 @@ module StuffArc
       f = File.open(fname, 'w')
       list = self.all
       list.each do |#{mod_lowercase}|
-        json_str = ActiveSupport::JSON.encode #{mod_lowercase}, :include_root_in_json => false, :except => :id
-        f.write json_str + "\n"
+        # as_json returns a hash, which we have to change to a JSON string
+        f.write #{mod_lowercase}.as_json.to_json + "\n"
       end
       f.close
       list.length
@@ -71,7 +69,7 @@ module StuffArc
       f = File.new fname
 
       f.lines do |line|
-        #{mod_lowercase} = self.new Hash[ActiveSupport::JSON.decode(line).map { |k,v| [k.to_sym, v] }]
+        #{mod_lowercase} = #{mod}.new.from_json(line.chomp)
         begin
           #{mod_lowercase}.save!
         rescue Exception => e
