@@ -56,7 +56,7 @@ included.
 
 ## Creating an Archive
 
-Fire up the rails console [rails c] and . . .
+Fire up the rails console [rails c &lt;development|production&gt;] and . . .
 
 Create an archive in the default directory with default name:
 
@@ -72,6 +72,6 @@ Create an archive in a specified directory with the default name
     
 ## Restoring an Archive
 
-Fire up the rails console [rails c] and . . .
+Fire up the rails console [rails c &lt;development|production&gt;] and . . .
 
 repeat one of the commands above using **Foo.unarchive** instead of *Foo.archive*
