@@ -16,7 +16,7 @@ require 'active_model'
 # require 'pry'
 
 module StuffArc
-  VERSION = "0.0.4"
+  VERSION = "0.0.5.pre1"
 
   def self.included(mod)
     mod_lowercase = mod.to_s.underscore.pluralize
@@ -68,16 +68,19 @@ module StuffArc
 
       f = File.new fname
 
+      counter = 0
       f.lines do |line|
         #{mod_lowercase} = #{mod}.new.from_json(line.chomp)
         begin
           #{mod_lowercase}.save!
+          counter += 1
         rescue Exception => e
           puts "exception unarchiving #{mod_lowercase}: \#{e}\n"
         end
       end
 
       f.close
+      counter
     end
     EOF
     
