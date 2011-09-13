@@ -16,7 +16,7 @@ require 'active_model'
 # require 'pry'
 
 module StuffArc
-  VERSION = "0.0.6.pre1"
+  VERSION = "0.0.6"
   module Base
     def archive options = {}
       return self.class.archive options unless self.class == Class
