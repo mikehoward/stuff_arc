@@ -13,8 +13,9 @@ task :default => :test
 
 desc "Run unit tests"
 task :test do
-  system 'ruby tests/*'
-  # require "./test/#{gem_name}_base_test"
+  system 'ruby test/*'
+# puts "------requiring ./test/#{gem_name}_test"
+  # require "./test/#{gem_name}_test"
 end
 
 desc "run rdoc to create doc"

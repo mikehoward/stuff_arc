@@ -1,4 +1,4 @@
-$LOAD_PATH << File.expand_path("../../lib",  __FILE__)
+$: << File.expand_path("../lib",  __FILE__)
 require 'test/unit'
 require 'active_model'
 require 'stuff_arc'

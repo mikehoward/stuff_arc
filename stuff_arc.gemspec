@@ -1,3 +1,4 @@
+$:.unshift File.expand_path('../lib', __FILE__) unless $: =~ /stuff_arc/
 require './lib/stuff_arc'
 Gem::Specification.new do |s|
   s.name = "stuff_arc"

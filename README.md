@@ -1,9 +1,10 @@
 # stuff_arc - supports Rails portable data dump and restore
 
-## Version 0.0.4
+## Version 0.0.6
 
 stuff_arc adds class level archiving and unarchiving of an ActiveRecord object
-a Rails app.
+a Rails app by Auto-Extending ActiveRecord::Base with two methods: `archive` and
+`unarchive`
 
 Archives are JSON data, one line per model instance with the 'id' value omitted so that
 the data can be restored w/o worrying about primary key clashes.
@@ -16,23 +17,16 @@ These methods are designed to be used in a Rails Console, not programatically.
 
 ## Install
 
-    gem install stuff_arc
+    Add `gem stuff_arc` to your Gemfile & run `bundle`
 
+    All models (derived from ActiveRecord::Base) will now have `archive` and `unarchive`
+    class methods.
+    
 ## Usage
 
-Include into models in which you want to create archives.
-
-    app/models/foo.rb:
-    
-    require 'stuff_arc'
+Assume:
 
     class Foo < ActiveRecord::Base
-      include StuffArc
-      
-      . . .
-    end
-
-This will add two class methods to Foo:
 
 * Foo.archive(options = {}) - which will create the file 'foos.json' containing JSON serializations
 of every record retrieved by Foo.all with the 'id' entry is excluded.
