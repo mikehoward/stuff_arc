@@ -18,11 +18,6 @@ task :test do
   # require "./test/#{gem_name}_test"
 end
 
-desc "run rdoc to create doc"
-task :doc do
-  system 'rdoc'
-end
-
 desc "build gem"
 task :gem do
   system "gem build #{gem_name}.gemspec"
@@ -32,12 +27,7 @@ task :gem do
   end
 end
 
-desc "push to github"
-task :git_push  do
-  system 'git push'
-end
-
 desc "push to rubygems"
-task :gem_push => :gem do
+task :push_gem => :gem do
   system "gem push #{gem_name}-#{gem_version}.gem"
 end
