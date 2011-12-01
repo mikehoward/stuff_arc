@@ -13,7 +13,7 @@ task :default => :test
 
 desc "Run unit tests"
 task :test do
-  system 'ruby test/*'
+  system 'ruby test/stuff_arc_test.rb'
 # puts "------requiring ./test/#{gem_name}_test"
   # require "./test/#{gem_name}_test"
 end

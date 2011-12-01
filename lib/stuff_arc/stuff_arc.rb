@@ -13,10 +13,9 @@
 
 require 'rails'
 require 'active_model'
-# require 'pry'
 
 module StuffArc
-  VERSION = "0.0.6"
+  VERSION = "0.0.7"
   module Base
     def archive options = {}
       return self.class.archive options unless self.class == Class
@@ -40,10 +39,13 @@ module StuffArc
       end
       f = File.open(fname, 'w')
       list = self.all
+      save_include_root_in_json = include_root_in_json
+      self.include_root_in_json = false
       list.each do |instance|
         # as_json returns a hash, which we have to change to a JSON string
         f.write instance.as_json.to_json + "\n"
       end
+      self.include_root_in_json = save_include_root_in_json
       f.close
       list.length
     end
@@ -69,12 +71,14 @@ module StuffArc
 
       counter = 0
       f.lines do |line|
-        tmp = self.new.from_json(line.chomp)
+        tmp = self.new
+        hash =  ActiveSupport::JSON.decode(line.chomp)
+        hash.each { |k,v| tmp.send("#{k}=".to_sym, v) }
         begin
           tmp.save!
           counter += 1
         rescue Exception => e
-          puts "exception unarchiving #{self}: \#{e}\n"
+          puts "exception unarchiving #{self}: #{e}\n"
         end
       end
 

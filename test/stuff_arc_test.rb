@@ -1,11 +1,11 @@
-$: << File.expand_path("../lib",  __FILE__)
+$: << File.expand_path("../../lib",  __FILE__)
 require 'test/unit'
 require 'active_model'
 require 'stuff_arc'
 # require 'active_model'
 
 class StuffArcHelper
-  include StuffArc
+  extend StuffArc::Base
   include ActiveModel::Serializers::JSON
 
   class <<self
