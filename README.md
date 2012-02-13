@@ -1,6 +1,8 @@
 # stuff_arc - supports Rails portable data dump and restore
 
-## Version 0.0.6
+Tested on Rails 3.0, 3.1 & 3.2
+
+## Version 0.0.8
 
 stuff_arc adds class level archiving and unarchiving of an ActiveRecord object
 a Rails app by Auto-Extending ActiveRecord::Base with two methods: `archive` and
