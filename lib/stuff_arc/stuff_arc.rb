@@ -15,7 +15,7 @@ require 'rails'
 require 'active_model'
 
 module StuffArc
-  VERSION = "0.0.7"
+  VERSION = "0.0.8"
   module Base
     def archive options = {}
       return self.class.archive options unless self.class == Class
